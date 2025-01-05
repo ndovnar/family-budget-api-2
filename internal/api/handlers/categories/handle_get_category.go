@@ -9,16 +9,16 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-func (a *Categories) HandleGetCategory(ctx *gin.Context) {
+func (c *Categories) HandleGetCategory(ctx *gin.Context) {
 	id := ctx.Param("id")
 
-	hasAccess := a.authz.IsUserHasAccessToCategory(ctx, id)
+	hasAccess := c.authz.IsUserHasAccessToCategory(ctx, id)
 	if !hasAccess {
 		ctx.Error(error.NewHttpError(http.StatusForbidden))
 		return
 	}
 
-	category, err := a.store.GetCategory(ctx, id)
+	category, err := c.store.GetCategory(ctx, id)
 	if err != nil {
 		log.Error().Err(err).Msg("failed to get category")
 

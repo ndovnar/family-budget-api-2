@@ -9,14 +9,14 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-func (a *Categories) HandleCreateCategory(ctx *gin.Context) {
+func (c *Categories) HandleCreateCategory(ctx *gin.Context) {
 	var req categoryRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		ctx.Error(error.NewHttpError(http.StatusBadRequest))
 		return
 	}
 
-	category, err := a.store.CreateCategory(ctx, &model.Category{
+	category, err := c.store.CreateCategory(ctx, &model.Category{
 		BudgetID: req.BudgetID,
 		Name:     req.Name,
 		Currency: req.Currency,
