@@ -9,10 +9,10 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-func (a *Categories) HandleUpdateCategory(ctx *gin.Context) {
+func (c *Categories) HandleUpdateCategory(ctx *gin.Context) {
 	id := ctx.Param("id")
 
-	hasAccess := a.authz.IsUserHasAccessToCategory(ctx, id)
+	hasAccess := c.authz.IsUserHasAccessToCategory(ctx, id)
 	if !hasAccess {
 		ctx.Error(error.NewHttpError(http.StatusForbidden))
 		return
@@ -24,7 +24,7 @@ func (a *Categories) HandleUpdateCategory(ctx *gin.Context) {
 		return
 	}
 
-	category, err := a.store.UpdateCategory(ctx, id, &model.Category{
+	category, err := c.store.UpdateCategory(ctx, id, &model.Category{
 		BudgetID: req.BudgetID,
 		Name:     req.Name,
 		Currency: req.Currency,
