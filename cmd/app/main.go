@@ -16,6 +16,7 @@ import (
 	"github.com/ndovnar/family-budget-api/internal/config"
 	"github.com/ndovnar/family-budget-api/internal/store"
 	"github.com/ndovnar/family-budget-api/internal/store/mongo"
+	"github.com/ndovnar/family-budget-api/internal/wshub"
 )
 
 var version, gitCommit, application string
@@ -40,11 +41,12 @@ func main() {
 
 	auth := auth.New(cfg.Auth)
 	authz := authz.New(auth, myStore)
+	wshub := wshub.New()
 
 	group, errCtx := errgroup.WithContext(sigCtx)
 
 	group.Go(func() error {
-		return runApi(errCtx, cfg.API, auth, authz, myStore)
+		return runApi(errCtx, cfg.API, auth, authz, wshub, myStore)
 	})
 
 	if err := group.Wait(); err != nil {
@@ -57,13 +59,13 @@ func main() {
 
 }
 
-func runApi(ctx context.Context, cfg api.Config, auth *auth.Auth, authz *authz.Authz, myStore store.Store) error {
+func runApi(ctx context.Context, cfg api.Config, auth *auth.Auth, authz *authz.Authz, wshub *wshub.Hub, myStore store.Store) error {
 	cancelCtx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
 	var serveError error
 
-	api := api.New(cfg, auth, authz, myStore)
+	api := api.New(cfg, auth, authz, wshub, myStore)
 
 	go func() {
 		serveError = api.Run(ctx)

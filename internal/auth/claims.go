@@ -7,25 +7,24 @@ import (
 )
 
 type Claims struct {
-	UserID    string `json:"userId"`
-	FirstName string `json:"firstName"`
-	LastName  string `json:"lastName"`
-	SessionID string `json:"sessionId"`
+	UserID    string `json:"userId,omitempty"`
+	FirstName string `json:"firstName,omitempty"`
+	LastName  string `json:"lastName,omitempty"`
+	SessionID string `json:"sessionId,omitempty"`
 	jwt.RegisteredClaims
 }
 
-func newClaims(sessionID, userID, firstName, lastName string, duration time.Duration) *Claims {
+func newClaims(sessionID, userID, firstName, lastName string, duration time.Duration) Claims {
 	claims := Claims{
 		UserID:    userID,
 		FirstName: firstName,
 		LastName:  lastName,
 		SessionID: sessionID,
 		RegisteredClaims: jwt.RegisteredClaims{
-			// ID:        tokenID,
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(duration)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
 		},
 	}
 
-	return &claims
+	return claims
 }

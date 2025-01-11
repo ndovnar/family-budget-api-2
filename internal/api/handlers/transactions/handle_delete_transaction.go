@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/ndovnar/family-budget-api/internal/api/error"
+	"github.com/ndovnar/family-budget-api/internal/model"
 	"github.com/ndovnar/family-budget-api/internal/store"
 	"github.com/rs/zerolog/log"
 )
@@ -12,7 +13,7 @@ import (
 func (t *Transactions) HandleDeleteTransaction(ctx *gin.Context) {
 	id := ctx.Param("id")
 	claims := t.auth.GetClaimsFromContext(ctx)
-	
+
 	hasAccess := t.authz.IsUserHasWriteAcessToTransaction(ctx, id)
 	if !hasAccess {
 		ctx.Error(error.NewHttpError(http.StatusForbidden))
@@ -43,4 +44,6 @@ func (t *Transactions) HandleDeleteTransaction(ctx *gin.Context) {
 
 		return
 	}
+
+	t.broadcastUpdate(ctx, model.UpdateActionDelete, transaction)
 }

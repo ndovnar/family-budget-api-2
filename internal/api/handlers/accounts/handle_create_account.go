@@ -29,5 +29,6 @@ func (a *Accounts) HandleCreateAccount(ctx *gin.Context) {
 		return
 	}
 
+	a.broadcastUpdate(ctx, model.UpdateActionCreate, account)
 	ctx.JSON(http.StatusOK, account)
 }

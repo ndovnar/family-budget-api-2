@@ -28,5 +28,6 @@ func (c *Categories) HandleCreateCategory(ctx *gin.Context) {
 		return
 	}
 
+	c.broadcastUpdate(ctx, model.UpdateActionCreate, category)
 	ctx.JSON(http.StatusOK, category)
 }

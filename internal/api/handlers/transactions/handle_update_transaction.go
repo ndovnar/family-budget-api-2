@@ -37,5 +37,6 @@ func (t *Transactions) HandleUpdateTransaction(ctx *gin.Context) {
 		return
 	}
 
+	t.broadcastUpdate(ctx, model.UpdateActionUpdate, updatedTransaction)
 	ctx.JSON(http.StatusOK, updatedTransaction)
 }

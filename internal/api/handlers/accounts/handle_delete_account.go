@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/ndovnar/family-budget-api/internal/api/error"
+	"github.com/ndovnar/family-budget-api/internal/model"
 	"github.com/ndovnar/family-budget-api/internal/store"
 	"github.com/rs/zerolog/log"
 )
@@ -18,8 +19,7 @@ func (a *Accounts) HandleDeleteAccount(ctx *gin.Context) {
 		return
 	}
 
-	err := a.store.DeleteAccount(ctx, id)
-
+	account, err := a.store.GetAccount(ctx, id)
 	if err != nil {
 		if err == store.ErrNotFound {
 			ctx.Error(error.NewHttpError(http.StatusNotFound))
@@ -30,4 +30,13 @@ func (a *Accounts) HandleDeleteAccount(ctx *gin.Context) {
 
 		return
 	}
+
+	err = a.store.DeleteAccount(ctx, id)
+	if err != nil {
+		log.Error().Err(err).Msg("failed to delete account")
+		ctx.Error(error.NewHttpError(http.StatusInternalServerError))
+		return
+	}
+
+	a.broadcastUpdate(ctx, model.UpdateActionDelete, account)
 }

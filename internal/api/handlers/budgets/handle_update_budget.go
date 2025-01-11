@@ -33,5 +33,6 @@ func (b *Budgets) HandleUpdateBudget(ctx *gin.Context) {
 		return
 	}
 
+	b.broadcastUpdate(ctx, model.UpdateActionUpdate, budget)
 	ctx.JSON(http.StatusOK, budget)
 }
