@@ -3,6 +3,7 @@ package transactions
 import (
 	"net/http"
 
+	"github.com/AlekSi/pointer"
 	"github.com/gin-gonic/gin"
 	"github.com/ndovnar/family-budget-api/internal/api/error"
 	"github.com/ndovnar/family-budget-api/internal/model"
@@ -25,9 +26,9 @@ func (t *Transactions) HandleUpdateTransaction(ctx *gin.Context) {
 	}
 
 	updatedTransaction, err := t.store.UpdateTransaction(ctx, id, &model.Transaction{
-		FromAccountID: req.FromAccountID,
-		ToAccountID:   req.ToAccountID,
-		CategoryID:    req.CategoryID,
+		FromAccountID: pointer.ToStringOrNil(req.FromAccountID),
+		ToAccountID:   pointer.ToStringOrNil(req.ToAccountID),
+		CategoryID:    pointer.ToStringOrNil(req.CategoryID),
 		Amount:        req.Amount,
 		Description:   req.Description,
 	})

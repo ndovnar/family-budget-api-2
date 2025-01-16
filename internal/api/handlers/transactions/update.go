@@ -3,19 +3,20 @@ package transactions
 import (
 	"context"
 
+	"github.com/AlekSi/pointer"
 	"github.com/ndovnar/family-budget-api/internal/model"
 )
 
 func (t *Transactions) broadcastUpdate(ctx context.Context, updateAction model.UpdateActionType, transaction *model.Transaction) {
 	userIDs := []string{}
 
-	if transaction.FromAccountID != "" {
-		fromAccountUserIDs := t.authz.GetUserIDsHaveAccessToAccount(ctx, transaction.FromAccountID)
+	if transaction.FromAccountID != nil {
+		fromAccountUserIDs := t.authz.GetUserIDsHaveAccessToAccount(ctx, pointer.GetString(transaction.FromAccountID))
 		userIDs = append(userIDs, fromAccountUserIDs...)
 	}
 
-	if transaction.ToAccountID != "" {
-		toAccountUserIDs := t.authz.GetUserIDsHaveAccessToAccount(ctx, transaction.FromAccountID)
+	if transaction.ToAccountID != nil {
+		toAccountUserIDs := t.authz.GetUserIDsHaveAccessToAccount(ctx, pointer.GetString(transaction.FromAccountID))
 		userIDs = append(userIDs, toAccountUserIDs...)
 	}
 
