@@ -10,6 +10,7 @@ import (
 	"github.com/ndovnar/family-budget-api/internal/api/handlers/tokens"
 	"github.com/ndovnar/family-budget-api/internal/api/handlers/transactions"
 	"github.com/ndovnar/family-budget-api/internal/api/handlers/users"
+	"github.com/ndovnar/family-budget-api/internal/api/handlers/websockets"
 	"github.com/ndovnar/family-budget-api/internal/api/middlewares"
 )
 
@@ -29,17 +30,18 @@ type route struct {
 func (api *API) registerRoutes() {
 	tokenHandlers := tokens.New(api.auth, api.store)
 	userHandlers := users.New(api.auth, api.authz, api.store)
-	accountHandlers := accounts.New(api.auth, api.authz, api.store)
-	budgetHandlers := budgets.New(api.auth, api.authz, api.store)
-	categoryHandlers := categories.New(api.authz, api.store)
-	transactionHandlers := transactions.New(api.auth, api.authz, api.store)
+	accountHandlers := accounts.New(api.auth, api.authz, api.wshub, api.store)
+	budgetHandlers := budgets.New(api.auth, api.authz, api.wshub, api.store)
+	categoryHandlers := categories.New(api.authz, api.wshub, api.store)
+	transactionHandlers := transactions.New(api.auth, api.authz, api.wshub, api.store)
+	websocketHandlers := websockets.New(api.auth, api.wshub)
 
 	authMiddleware := middlewares.Auth(api.auth, api.store)
 	api.router.Use(middlewares.Error())
 
 	routes := []routeGroup{
 		{
-			path: "tokens",
+			path: "/tokens",
 			routes: []route{
 				{
 					path:    "/renew/access",
@@ -50,6 +52,14 @@ func (api *API) registerRoutes() {
 					path:    "/renew/refresh",
 					method:  http.MethodPost,
 					handler: tokenHandlers.HandleRenewRefreshToken,
+				},
+				{
+					path:    "/ws/access",
+					method:  http.MethodPost,
+					handler: tokenHandlers.HandleWsAccessToken,
+					middlewares: []gin.HandlerFunc{
+						authMiddleware,
+					},
 				},
 			},
 		},
@@ -213,6 +223,16 @@ func (api *API) registerRoutes() {
 					path:    "/:id",
 					method:  http.MethodDelete,
 					handler: transactionHandlers.HandleDeleteTransaction,
+				},
+			},
+		},
+		{
+			path: "/ws",
+			routes: []route{
+				{
+					path:    "",
+					method:  http.MethodGet,
+					handler: websocketHandlers.HandleClient,
 				},
 			},
 		},

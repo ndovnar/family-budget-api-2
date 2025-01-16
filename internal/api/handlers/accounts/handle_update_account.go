@@ -34,5 +34,6 @@ func (a *Accounts) HandleUpdateAccount(ctx *gin.Context) {
 		return
 	}
 
+	a.broadcastUpdate(ctx, model.UpdateActionUpdate, account)
 	ctx.JSON(http.StatusOK, account)
 }

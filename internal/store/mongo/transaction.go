@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/AlekSi/pointer"
 	"github.com/ndovnar/family-budget-api/internal/filter"
 	"github.com/ndovnar/family-budget-api/internal/model"
 	"github.com/ndovnar/family-budget-api/internal/store"
@@ -238,11 +239,11 @@ func (m *Mongo) revertTransaction(ctx context.Context, transaction *model.Transa
 }
 
 type makeTransactionParams struct {
-	fromAccountID      string
+	fromAccountID      *string
 	fromAccountAmmount float64
-	toAccountID        string
+	toAccountID        *string
 	toAccountAmmount   float64
-	categoryID         string
+	categoryID         *string
 	categoryAmmount    float64
 }
 
@@ -250,8 +251,8 @@ func (m *Mongo) makeTransaction(ctx context.Context, params *makeTransactionPara
 	var fromAccount, toAccount *model.Account
 	var category *model.Category
 
-	if params.fromAccountID != "" {
-		accountDB, err := m.GetAccount(ctx, params.fromAccountID)
+	if params.fromAccountID != nil {
+		accountDB, err := m.GetAccount(ctx, pointer.GetString(params.fromAccountID))
 		if err != nil {
 			return err
 		}
@@ -259,8 +260,8 @@ func (m *Mongo) makeTransaction(ctx context.Context, params *makeTransactionPara
 		fromAccount = accountDB
 	}
 
-	if params.toAccountID != "" {
-		accountDB, err := m.GetAccount(ctx, params.toAccountID)
+	if params.toAccountID != nil {
+		accountDB, err := m.GetAccount(ctx, pointer.GetString(params.toAccountID))
 		if err != nil {
 			return err
 		}
@@ -268,8 +269,8 @@ func (m *Mongo) makeTransaction(ctx context.Context, params *makeTransactionPara
 		toAccount = accountDB
 	}
 
-	if params.categoryID != "" {
-		categoryDB, err := m.GetCategory(ctx, params.categoryID)
+	if params.categoryID != nil {
+		categoryDB, err := m.GetCategory(ctx, pointer.GetString(params.categoryID))
 		if err != nil {
 			return err
 		}

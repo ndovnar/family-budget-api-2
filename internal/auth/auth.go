@@ -3,15 +3,17 @@ package auth
 import "time"
 
 type Auth struct {
-	secretKey            string
-	accessTokenDuration  time.Duration
-	refreshTokenDuration time.Duration
+	secretKey             string
+	accessTokenDuration   time.Duration
+	refreshTokenDuration  time.Duration
+	wsAccessTokenDuration time.Duration
 }
 
 func New(cfg Config) *Auth {
 	return &Auth{
-		secretKey:            cfg.SecretKey,
-		accessTokenDuration:  cfg.AccessTokenDuration,
-		refreshTokenDuration: cfg.RefreshTokenDuration,
+		secretKey:             cfg.SecretKey,
+		accessTokenDuration:   cfg.AccessTokenDuration,
+		refreshTokenDuration:  cfg.RefreshTokenDuration,
+		wsAccessTokenDuration: cfg.WsAccessTokenDuration,
 	}
 }

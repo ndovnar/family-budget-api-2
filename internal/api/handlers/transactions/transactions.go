@@ -7,11 +7,13 @@ import (
 	"github.com/ndovnar/family-budget-api/internal/authz"
 	"github.com/ndovnar/family-budget-api/internal/filter"
 	"github.com/ndovnar/family-budget-api/internal/model"
+	"github.com/ndovnar/family-budget-api/internal/wshub"
 )
 
 type Transactions struct {
 	auth  *auth.Auth
 	authz *authz.Authz
+	wshub *wshub.Hub
 	store Store
 }
 
@@ -23,10 +25,11 @@ type Store interface {
 	DeleteTransaction(ctx context.Context, id string) error
 }
 
-func New(auth *auth.Auth, authz *authz.Authz, store Store) *Transactions {
+func New(auth *auth.Auth, authz *authz.Authz, wshub *wshub.Hub, store Store) *Transactions {
 	return &Transactions{
 		auth:  auth,
 		authz: authz,
+		wshub: wshub,
 		store: store,
 	}
 }

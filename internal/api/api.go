@@ -12,24 +12,27 @@ import (
 	"github.com/ndovnar/family-budget-api/internal/auth"
 	"github.com/ndovnar/family-budget-api/internal/authz"
 	"github.com/ndovnar/family-budget-api/internal/store"
+	"github.com/ndovnar/family-budget-api/internal/wshub"
 )
 
 type API struct {
 	config Config
 	auth   *auth.Auth
 	authz  *authz.Authz
+	wshub  *wshub.Hub
 	router *gin.Engine
 	store  store.Store
 	server *http.Server
 }
 
-func New(cfg Config, auth *auth.Auth, authz *authz.Authz, store store.Store) *API {
+func New(cfg Config, auth *auth.Auth, authz *authz.Authz, wshub *wshub.Hub, store store.Store) *API {
 	router := gin.Default()
 
 	api := &API{
 		config: cfg,
 		auth:   auth,
 		authz:  authz,
+		wshub:  wshub,
 		router: router,
 		store:  store,
 		server: &http.Server{

@@ -21,3 +21,13 @@ func newRenewRefreshTokenResponse(accessToken string, refreshToken string) *rene
 		RefreshToken: refreshToken,
 	}
 }
+
+type wsAccesTokenResponse struct {
+	AccessToken string `json:"accessToken"`
+}
+
+func newWsAccessTokenResponse(accessToken string) *wsAccesTokenResponse {
+	return &wsAccesTokenResponse{
+		AccessToken: accessToken,
+	}
+}

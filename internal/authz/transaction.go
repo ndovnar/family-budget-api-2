@@ -1,6 +1,7 @@
 package authz
 
 import (
+	"github.com/AlekSi/pointer"
 	"github.com/gin-gonic/gin"
 )
 
@@ -10,7 +11,11 @@ func (a *Authz) IsUserHasReadAcessToTransaction(ctx *gin.Context, id string) boo
 		return false
 	}
 
-	return a.IsUserHasAccessToCategory(ctx, transaction.CategoryID)
+	if transaction.CategoryID == nil {
+		return false
+	}
+
+	return a.IsUserHasAccessToCategory(ctx, pointer.GetString(transaction.CategoryID))
 }
 
 func (a *Authz) IsUserHasWriteAcessToTransaction(ctx *gin.Context, id string) bool {
@@ -21,5 +26,5 @@ func (a *Authz) IsUserHasWriteAcessToTransaction(ctx *gin.Context, id string) bo
 		return false
 	}
 
-	return transaction.UserID == claims.ID
+	return transaction.UserID == claims.UserID
 }

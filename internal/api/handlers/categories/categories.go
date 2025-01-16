@@ -6,10 +6,12 @@ import (
 	"github.com/ndovnar/family-budget-api/internal/authz"
 	"github.com/ndovnar/family-budget-api/internal/filter"
 	"github.com/ndovnar/family-budget-api/internal/model"
+	"github.com/ndovnar/family-budget-api/internal/wshub"
 )
 
 type Categories struct {
 	authz *authz.Authz
+	wshub *wshub.Hub
 	store Store
 }
 
@@ -21,9 +23,10 @@ type Store interface {
 	DeleteCategory(ctx context.Context, id string) error
 }
 
-func New(authz *authz.Authz, store Store) *Categories {
+func New(authz *authz.Authz, wshub *wshub.Hub, store Store) *Categories {
 	return &Categories{
 		authz: authz,
+		wshub: wshub,
 		store: store,
 	}
 }
