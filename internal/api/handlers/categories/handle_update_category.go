@@ -36,6 +36,6 @@ func (c *Categories) HandleUpdateCategory(ctx *gin.Context) {
 		return
 	}
 
-	a.broadcastUpdate(ctx, model.UpdateActionUpdate, category)
+	c.broadcastUpdate(ctx, model.UpdateActionUpdate, category)
 	ctx.JSON(http.StatusOK, category)
 }
